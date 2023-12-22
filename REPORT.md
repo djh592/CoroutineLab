@@ -242,6 +242,15 @@ coroutine batched: 1346.17 ns per search, 42.07 ns per access
 可以看到一定的性能提升。
 
 
+## 参考资料
+
+了解协程相关知识：
+
+https://www.bilibili.com/video/BV1y3411u7Me/?spm_id_from=333.337.search-card.all.click&vd_source=782e227349ebd772d84713ec752b8f92
+
+[cs-notes/计算机基础 at main · tomstillcoding/cs-notes (github.com)](https://github.com/tomstillcoding/cs-notes/tree/main/计算机基础)
+
+
 ## 总结和感想
 
 协程的实现需要一些并发编程的思想，对于刚刚入门的我来说的确有些理解上的困难。

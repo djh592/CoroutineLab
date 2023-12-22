@@ -48,6 +48,39 @@ void coroutine_main(struct basic_context *context){
 
 如上图所示，`coroutine_switch` 被父/子协程调用，在子/父协程退出。通过 mov 直接改变 `%rsp` 指向；通过 ret 间接改变 PC 指向。
 
+`coroutine_switch` 的实现如下：
+
+```assembly
+.global coroutine_switch
+coroutine_switch:
+    # TODO: Task 1
+    # 保存 callee-saved 寄存器到 %rdi 指向的上下文
+    movq %rsp, 64(%rdi)
+    movq %rbx, 72(%rdi)
+    movq %rbp, 80(%rdi)
+    movq %r12, 88(%rdi)
+    movq %r13, 96(%rdi)
+    movq %r14, 104(%rdi)
+    movq %r15, 112(%rdi)
+    # 保存的上下文中 rip 指向 ret 指令的地址（.coroutine_ret）
+    leaq .coroutine_ret(%rip), %rax
+    movq %rax, 120(%rdi)
+
+    # 从 %rsi 指向的上下文恢复 callee-saved 寄存器
+    movq 64(%rsi), %rsp
+    movq 72(%rsi), %rbx
+    movq 80(%rsi), %rbp
+    movq 88(%rsi), %r12
+    movq 96(%rsi), %r13
+    movq 104(%rsi), %r14
+    movq 112(%rsi), %r15
+    # 最后 jmpq 到上下文保存的 rip
+    jmpq *120(%rsi)
+
+.coroutine_ret:
+    ret
+```
+
 **子协程 finish：**
 
 `coroutine_main` 通过 `coroutine_switch` 执行返回操作，ret 到父协程。
